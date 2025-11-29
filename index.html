@@ -9,29 +9,29 @@
         font-family: Arial, sans-serif;
         padding: 30px;
       }
-
       h1 {
         font-size: 28px;
         margin-bottom: 20px;
       }
-
-      .form-row {
+      .row {
+        display: flex;
+        align-items: center;
         margin-bottom: 12px;
       }
-
       label {
-        display: inline-block;
-        width: 120px;
+        width: 150px;
         font-weight: bold;
       }
-
       input {
         padding: 8px;
-        width: 250px;
+        width: 220px;
       }
-
+      .two-col {
+        display: flex;
+        gap: 20px;
+      }
       button {
-        margin-top: 20px;
+        margin-top: 15px;
         padding: 10px 18px;
         background: #3a82f7;
         color: white;
@@ -39,7 +39,6 @@
         cursor: pointer;
         border-radius: 4px;
       }
-
       #results {
         margin-top: 30px;
         padding: 20px;
@@ -52,47 +51,59 @@
   </head>
 
   <body>
+    <h1>Advanced Temperature Search</h1>
 
-    <h1>World Temperature Search</h1>
+    <p>This simple tool retrieves the <strong>minimum</strong> and <strong>maximum</strong> temperatures matching your criteria.</p>
+    <p>Leave locations blank to search for global min/max temperature for year range</p>
+    <p>Or specify a location to see their historical min/max temperature</p>
+    <p>Data Set is a huge CSV containing global temperatures between the years 1995 and 2020, often used for programming learning</p>
+    <br>
 
-    <div class="form-row">
-      <label>Category:</label>
-      <select id="category">
-        <option value="">(None)</option>
-        <option>Region</option>
-        <option>Country</option>
-        <option>State</option>
-        <option>City</option>
-        <option>Month</option>
-        <option>Year</option>
-      </select>
+    <div class="two-col">
+      <div>
+        <div class="row"><label>Region:</label> <input id="region"></div>
+        <div class="row"><label>Country:</label> <input id="country"></div>
+        <div class="row"><label>State:</label> <input id="state"></div>
+        <div class="row"><label>City:</label> <input id="city"></div>
+      </div>
+
+      <div>
+        <div class="row"><label>Start Year:</label> <input id="startYear"></div>
+        <div class="row"><label>End Year:</label> <input id="endYear"></div>
+      </div>
     </div>
 
-    <div class="form-row">
-      <label>Value:</label>
-      <input type="text" id="value" placeholder="Texas, Japan, 2000, etc">
+    <button onclick="runSearch()">Run Search</button>
+
+    <div id="results">
+      Enter criteria above and click <strong>Run Search</strong> to retrieve results.
     </div>
-
-    <button onclick="runSearch()">Search Min/Max</button>
-
-    <div id="results">Results will appear here...</div>
 
     <script>
       async function runSearch() {
-        const category = document.getElementById("category").value;
-        const value = document.getElementById("value").value;
+        const results = document.getElementById("results");
+        results.textContent = "Searching… please wait…";
 
-        const query = new URLSearchParams({
-          category,
-          value
+        const fields = [
+          "region",
+          "country",
+          "state",
+          "city",
+          "startYear",
+          "endYear"
+        ];
+
+        const params = new URLSearchParams();
+
+        fields.forEach((id) => {
+          const v = document.getElementById(id).value.trim();
+          if (v) params.append(id, v);
         });
 
-        const res = await fetch("/api/search?" + query.toString());
+        const res = await fetch("/api/search?" + params.toString());
         const text = await res.text();
-
-        document.getElementById("results").textContent = text;
+        results.textContent = text;
       }
     </script>
-
   </body>
 </html>

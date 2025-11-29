@@ -1,1 +1,4 @@
 public/city_temperature.csv
+
+.vercel
+.env*.local
