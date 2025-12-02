@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "public": "public",
   "routes": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
